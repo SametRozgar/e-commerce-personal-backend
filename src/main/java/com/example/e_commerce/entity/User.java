@@ -44,11 +44,11 @@ public class User {
     @OneToMany (mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Adress> adresses=new ArrayList<>();
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Cart cart;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,FetchType.LAZY)
-    private List<Order> orders=new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Order> orders = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
