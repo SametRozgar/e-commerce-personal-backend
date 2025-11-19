@@ -42,7 +42,7 @@ public class User {
     private UserStatus status=UserStatus.ACTIVE;
 
     @OneToMany (mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<Adress> adresses=new ArrayList<>();
+    private List<Address> addresses =new ArrayList<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Cart cart;
