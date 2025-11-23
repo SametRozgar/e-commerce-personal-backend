@@ -8,35 +8,108 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepositry;
+
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CartService cartService;
 
     @Transactional
-    public User registerUser(RegisterRequest registerRequest){
-        if(userRepositry.existsByEmail(registerRequest.getEmail())){
-            throw new RuntimeException("Email is already using");
+    public User registerUser(RegisterRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email zaten kullanılıyor");
         }
 
-        User user=User.builder()
-                .email(registerRequest.getEmail())
-                .password(registerRequest.passwordEncoder.encode(registerRequest.getPassword()))
-                .firstName(registerRequest.getFirsName())
-                .lastName(registerRequest.getLastName())
+        User user = User.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .role(User.Role.USER)
+                .status(User.UserStatus.ACTIVE)
                 .build();
-        User savedUser=userRepositry.save(user);
 
+        User savedUser = userRepository.save(user);
+
+        // Kullanıcıya boş bir sepet oluştur
         cartService.createCartForUser(savedUser);
 
         return savedUser;
     }
 
-    public User findByEmail(String email){
-        return userRepositry.findByEmail(email)
-                .orElseThrow(()->new RuntimeException("User couldnt found"))
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+    }
+
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public List<User> findByRole(User.Role role) {
+        return userRepository.findByRole(role);
+    }
+
+    @Transactional
+    public User updateUserProfile(Long userId, UserProfileUpdateRequest request) {
+        User user = findById(userId);
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateUserStatus(Long userId, User.UserStatus status) {
+        User user = findById(userId);
+        user.setStatus(status);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateUserRole(Long userId, User.Role role) {
+        User user = findById(userId);
+        user.setRole(role);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void changePassword(Long userId, String currentPassword, String newPassword) {
+        User user = findById(userId);
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new RuntimeException("Mevcut şifre hatalı");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = findById(userId);
+        userRepository.delete(user);
+    }
+
+    public Long getTotalUserCount() {
+        return userRepository.countAllUsers();
+    }
+
+    public Long getActiveUserCount() {
+        return userRepository.countActiveUsers();
+    }
+
+    public List<User> searchUsersByEmail(String email) {
+        return userRepository.findByEmailContaining(email);
     }
 }
