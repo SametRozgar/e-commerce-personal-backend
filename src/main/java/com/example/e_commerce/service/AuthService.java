@@ -1,6 +1,8 @@
 package com.example.e_commerce.service;
 
+import com.example.e_commerce.dto.auth.JwtResponse;
 import com.example.e_commerce.dto.auth.LoginRequest;
+import com.example.e_commerce.dto.auth.RegisterRequest;
 import com.example.e_commerce.entity.User;
 import com.example.e_commerce.security.JwtTokenUtil;
 import jakarta.transaction.Transactional;

@@ -6,48 +6,16 @@ import lombok.Data;
 
 @Data
 public class RegisterRequest {
-    @NotBlank
-    @Email
+    @NotBlank(message = "Email boş olamaz")
+    @Email(message = "Geçerli bir email adresi giriniz")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Şifre boş olamaz")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "Ad boş olamaz")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "Soyad boş olamaz")
     private String lastName;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 }
