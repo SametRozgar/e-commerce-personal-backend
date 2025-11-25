@@ -1,5 +1,7 @@
 package com.example.e_commerce.service;
 
+import com.example.e_commerce.dto.category.CategoryCreateRequest;
+import com.example.e_commerce.dto.category.CategoryUpdateRequest;
 import com.example.e_commerce.entity.Category;
 import com.example.e_commerce.repository.CategoryRepository;
 import jakarta.transaction.Transactional;

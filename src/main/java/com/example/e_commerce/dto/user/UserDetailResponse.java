@@ -1,9 +1,11 @@
 package com.example.e_commerce.dto.user;
 
 import com.example.e_commerce.entity.User;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Data
 public class UserDetailResponse {
     private Long id;
     private String email;

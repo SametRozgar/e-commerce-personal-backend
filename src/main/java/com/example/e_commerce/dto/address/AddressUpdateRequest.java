@@ -1,7 +1,9 @@
 package com.example.e_commerce.dto.address;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
+@Data
 public class AddressUpdateRequest {
     @NotBlank(message = "Adres başlığı boş olamaz")
     private String title;

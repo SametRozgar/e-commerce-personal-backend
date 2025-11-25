@@ -35,6 +35,7 @@ public class Product {
     @JoinColumn(name = "category_id",nullable = false)
     private Category category;
 
+    @Builder.Default
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<ProductVariant> variants=new ArrayList<>();
 
@@ -43,5 +44,20 @@ public class Product {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Image> images = new ArrayList<>();
+
+    public String getPrimaryImageUrl() {
+        return this.images.stream()
+                .filter(Image::getIsPrimary)
+                .findFirst()
+                .map(Image::getImageUrl)
+                .orElse(this.images.stream()
+                        .findFirst()
+                        .map(Image::getImageUrl)
+                        .orElse("/images/default-product.png"));
+    }
 
 }

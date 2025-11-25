@@ -1,5 +1,7 @@
 package com.example.e_commerce.service;
 
+import com.example.e_commerce.dto.product.ProductVariantCreateRequest;
+import com.example.e_commerce.dto.product.ProductVariantUpdateRequest;
 import com.example.e_commerce.entity.Product;
 import com.example.e_commerce.entity.ProductVariant;
 import com.example.e_commerce.repository.ProductVariantRepository;

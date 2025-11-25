@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +24,7 @@ public class AuthService {
 
     @Transactional
     public JwtResponse login(LoginRequest request) {
-
+        // Kullanıcı durum kontrolü
         User user = userService.findByEmail(request.getEmail());
         if (user.getStatus() == User.UserStatus.FROZEN) {
             throw new RuntimeException("Hesabınız dondurulmuş. Lütfen müşteri hizmetleri ile iletişime geçin.");
@@ -38,10 +39,10 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        User userDetails = (User) authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String jwt = jwtTokenUtil.generateToken(userDetails);
 
-        return new JwtResponse(jwt, userDetails.getEmail(), userDetails.getRole().name());
+        return new JwtResponse(jwt, user.getEmail(), user.getRole().name());
     }
 
     @Transactional

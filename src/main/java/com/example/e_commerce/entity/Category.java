@@ -29,6 +29,10 @@ public class Category {
 
     private String description;
 
+    private String imageUrl;
+    private String thumbnailUrl;
+
+    @Builder.Default
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
 
