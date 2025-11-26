@@ -6,6 +6,8 @@ import com.example.e_commerce.entity.User;
 import com.example.e_commerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -49,6 +51,17 @@ public class UserService implements UserDetailsService {
 
 
         return savedUser;
+    }
+
+    public User getCurrentUser() {
+        // Gerçek implementasyon - AuthService'ten alınabilir
+        // Şimdilik basit bir implementasyon:
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Kullanıcı giriş yapmamış");
+        }
+        String email = authentication.getName();
+        return findByEmail(email);
     }
 
     public User findByEmail(String email) {

@@ -6,6 +6,8 @@ import com.example.e_commerce.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +47,22 @@ public class OrderService {
     public Order getOrderByOrderNumber(String orderNumber) {
         return orderRepository.findByOrderNumber(orderNumber)
                 .orElseThrow(() -> new RuntimeException("Sipariş bulunamadı"));
+    }
+
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+
+    public User getCurrentUser() {
+        // Gerçek implementasyon - AuthService'ten alınabilir
+        // Şimdilik basit bir implementasyon:
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Kullanıcı giriş yapmamış");
+        }
+        String email = authentication.getName();
+        return userService.findByEmail(email);
     }
 
     @Transactional
