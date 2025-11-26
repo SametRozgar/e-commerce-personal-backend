@@ -21,6 +21,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
+    private final CartService cartService;
 
     @Transactional
     public JwtResponse login(LoginRequest request) {
@@ -47,7 +48,13 @@ public class AuthService {
 
     @Transactional
     public User register(RegisterRequest request) {
-        return userService.registerUser(request);
+        // Kullanıcıyı kaydet
+        User savedUser = userService.registerUser(request);
+
+        // Kullanıcıya boş bir sepet oluştur - circular dependency olmayacak
+        cartService.createCartForUser(savedUser);
+
+        return savedUser;
     }
 
     public User getCurrentUser() {

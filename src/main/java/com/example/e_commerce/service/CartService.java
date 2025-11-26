@@ -6,11 +6,11 @@ import com.example.e_commerce.entity.Cart;
 import com.example.e_commerce.entity.CartItem;
 import com.example.e_commerce.entity.ProductVariant;
 import com.example.e_commerce.entity.User;
-import com.example.e_commerce.repository.CartItemRepository;
 import com.example.e_commerce.repository.CartRepository;
-import jakarta.transaction.Transactional;
+import com.example.e_commerce.repository.CartItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,18 +20,7 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    private final UserService userService;
     private final ProductVariantService productVariantService;
-
-    public Cart getCartByUser(Long userId) {
-        return cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Sepet bulunamadı"));
-    }
-
-    public Cart getCartWithItems(Long userId) {
-        return cartRepository.findByUserIdWithItems(userId)
-                .orElseThrow(() -> new RuntimeException("Sepet bulunamadı"));
-    }
 
     @Transactional
     public Cart createCartForUser(User user) {
@@ -44,6 +33,17 @@ public class CartService {
                 .build();
 
         return cartRepository.save(cart);
+    }
+
+    public Cart getCartByUserId(Long userId) {
+        return cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Sepet bulunamadı"));
+    }
+
+    // EKSİK METODU EKLEDİK
+    public Cart getCartWithItems(Long userId) {
+        return cartRepository.findByUserIdWithItems(userId)
+                .orElseThrow(() -> new RuntimeException("Sepet bulunamadı"));
     }
 
     @Transactional

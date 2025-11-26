@@ -5,6 +5,7 @@ import com.example.e_commerce.dto.user.UserProfileUpdateRequest;
 import com.example.e_commerce.entity.User;
 import com.example.e_commerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +21,6 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final CartService cartService;
 
     // UserDetailsService metodunu implemente et - BU METODU EKLEYİN
     @Override
@@ -47,8 +47,6 @@ public class UserService implements UserDetailsService {
 
         User savedUser = userRepository.save(user);
 
-        // Kullanıcıya boş bir sepet oluştur
-        cartService.createCartForUser(savedUser);
 
         return savedUser;
     }
