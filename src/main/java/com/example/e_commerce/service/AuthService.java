@@ -25,26 +25,33 @@ public class AuthService {
 
     @Transactional
     public JwtResponse login(LoginRequest request) {
+
         // Kullanıcı durum kontrolü
         User user = userService.findByEmail(request.getEmail());
         if (user.getStatus() == User.UserStatus.FROZEN) {
-            throw new RuntimeException("Hesabınız dondurulmuş. Lütfen müşteri hizmetleri ile iletişime geçin.");
+            throw new RuntimeException("Hesabınız dondurulmuş.");
         }
         if (user.getStatus() == User.UserStatus.BANNED) {
-            throw new RuntimeException("Hesabınız engellenmiş. Giriş yapamazsınız.");
+            throw new RuntimeException("Hesabınız engellenmiş.");
         }
 
-        // Authentication
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String jwt = jwtTokenUtil.generateToken(userDetails);
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String jwt = jwtTokenUtil.generateToken(userDetails);
 
-        return new JwtResponse(jwt, user.getEmail(), user.getRole().name());
+            return new JwtResponse(jwt, user.getEmail(), user.getRole().name());
+
+        } catch (Exception e) {
+            throw new RuntimeException("E-posta veya şifre hatalı");
+        }
     }
+
 
     @Transactional
     public User register(RegisterRequest request) {
